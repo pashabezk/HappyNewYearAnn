@@ -298,7 +298,6 @@ function onResize (event) {
 	scale = cvs.width/1000; //делим на 1000, т.к. изначально вся разметка прописывалась исходя из гирины в 1000px
 	cellSize = cvs.width/(cellsAmountX+1);
 }
-onResize();
 window.addEventListener('resize', onResize, true); //добавление прослушивателя на изменения размеров окна
 
 // загрузка изображений
@@ -583,7 +582,7 @@ function draw () {
 			}
 
 			ctx.drawImage(hero, heroPosX*cellSize, heroPosY*cellSize, cellSize, cellSize); //персонаж
-			
+
 			//убрать все, кроме видимой области (если карта не видна или если не бонусный уровень)
 			if (isMapInvisible) {
 				if (curGrid != 9) {
@@ -621,5 +620,6 @@ function start (hero_x, hero_y) {
 
 // функция запуска запуска. Нужна, чтобы загрузились все картинки перед игрой
 finalBg.onload = function() {
+	onResize();
 	start(9, 11);
 }

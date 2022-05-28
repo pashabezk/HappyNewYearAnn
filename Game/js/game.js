@@ -261,9 +261,45 @@ var STR_FINAL = [
 
 var cvs = document.getElementById("canvas");
 var ctx = cvs.getContext("2d");
-var textHeight = 24;
+var textHeight = 12;
 ctx.font = textHeight + "px Calibri";
-ctx.textAlign = "center";
+var scale = 1; // масштаб 
+
+var curGrid = 0; // номер текущего игрового поля
+var gameGrid = grids[curGrid]; // текущее игровое поле
+function setGrid(newGrid) {
+	curGrid = newGrid;
+	gameGrid = grids[curGrid];
+}
+
+// stage - сцена
+// 1 - игра
+// 2 - финал
+var stage = 1;
+
+var cellSize = 50; //размер клетки
+var cellsAmountX = 19; //количество клеток минус одна (т.к. считаем с нуля)
+var cellsAmountY = 19;
+var heroPosX = 0; //позиция героя
+var heroPosY = 0;
+
+var isMapInvisible = true; //является ли карта невидимой (если true, то видно только небольшой радиус вокруг персонажа)
+
+// функция изменения размеров canvas
+function onResize (event) {
+	const width  = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+	const height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+	size = (width<height) ? width : height;
+	size -= 30; //небольшие поля
+	cvs.height = size;
+	cvs.width = size-size/11; // вычитаем 1/11, так как высота на 1/11 больше ширины
+	ctx = cvs.getContext("2d");
+	ctx.font = textHeight + "px Calibri";
+	scale = cvs.width/1000; //делим на 1000, т.к. изначально вся разметка прописывалась исходя из гирины в 1000px
+	cellSize = cvs.width/(cellsAmountX+1);
+}
+onResize();
+window.addEventListener('resize', onResize, true); //добавление прослушивателя на изменения размеров окна
 
 // загрузка изображений
 var hero = new Image();
@@ -307,26 +343,6 @@ for (var i=0; i<gifts.length; i++)
 // создание массива изображений. Массив совпадает с расшифровкой клеток (см. пояснение перед массивом grid)
 var cellType = ["", tree, tree2, tree3, gifts[0], gifts[1], gifts[2], gifts[3], gifts[4], finish, key, chest, bear, honey, portal, activePortal];
 
-var curGrid = 0; // номер текущего игрового поля
-var gameGrid = grids[curGrid]; // текущее игровое поле
-function setGrid(newGrid) {
-	curGrid = newGrid;
-	gameGrid = grids[curGrid];
-}
-
-// stage - сцена
-// 1 - игра
-// 2 - финал
-var stage = 1;
-
-var cellSize = 50; //размер клетки
-var cellsAmountX = 19; //количество клеток минус одна (т.к. считаем с нуля)
-var cellsAmountY = 19;
-var heroPosX = 0; //позиция героя
-var heroPosY = 0;
-
-var isMapInvisible = true; //является ли карта невидимой (если true, то видно только небольшой радиус вокруг персонажа)
-
 var inventory = new Array(); // инвентарь
 // количество объектов в инвентаре. В качестве obj передаются объекты, который были объявлены, как Image
 function countInInventory(obj) {
@@ -335,8 +351,6 @@ function countInInventory(obj) {
 
 var messageBoxList = new Array(); // массив с сообщениями
 class MessageBox {
-	// type - тип
-	// 0 - информационный (только одно действие)
 	constructor(text, subText) {
 		this.text = text;
 		this.subText = subText;
@@ -475,7 +489,7 @@ function checkCell (x, y) {
 				portalHero();
 			}
 			else {
-				setGrid(7); // смена поля игры на бонусный уровень
+				setGrid(7); // возвращение с бонусного уровня на основную карту
 				portalHero();
 			}
 			canIGo=false;
@@ -531,8 +545,7 @@ function checkKey(e) {
 			if(e.code == 'Enter')
 				stage=1; //вернуться в игру
 			break;
-	}
-			
+	}		
 }
 
 // эмуляция рисунка MessageBox
@@ -547,16 +560,16 @@ function drawMessageBox() {
 	ctx.fillStyle = "white";
 	ctx.fillRect((cvs.width - msgBoxWidth)/2, (cvs.height - msgBoxHeight)/2, msgBoxWidth, msgBoxHeight);
 	ctx.fillStyle = "black";
-	ctx.fillText(text, cvs.width/2, cvs.height/2  - textHeight);
+	ctx.fillText(text, cvs.width/2 - textParams.width/2, cvs.height/2  - textHeight);
 	ctx.fillStyle = "darkviolet";
-	ctx.fillText(subText, cvs.width/2, cvs.height/2 + margins/2 + textHeight);
+	ctx.fillText(subText, cvs.width/2 - subTextParams.width/2, cvs.height/2 + margins/2 + textHeight);
 }
 
 // функция отрисовки
 function draw () {
 	switch(stage) {
 		case 1: //игра
-			ctx.drawImage(bg, 0, 0, 1000, 1000); // фон
+			ctx.drawImage(bg, 0, 0, cvs.width, cvs.height); // фон
 
 			var i=0, j=0;
 			for (var row of gameGrid) {
@@ -570,7 +583,7 @@ function draw () {
 			}
 
 			ctx.drawImage(hero, heroPosX*cellSize, heroPosY*cellSize, cellSize, cellSize); //персонаж
-
+			
 			//убрать все, кроме видимой области (если карта не видна или если не бонусный уровень)
 			if (isMapInvisible) {
 				if (curGrid != 9) {
@@ -580,7 +593,7 @@ function draw () {
 				}
 			}
 
-			ctx.drawImage(foreground, 0, 1000, 1000, 100); // плашка для инвентаря
+			ctx.drawImage(foreground, 0, cvs.width, cvs.height, cvs.height/10); // плашка для инвентаря
 			if(inventory.length != 0) {
 				for (var i=0; i < inventory.length; i++) {
 					ctx.drawImage(inventory[i], cellSize*i*2, cellSize*(cellsAmountY+1), cellSize*2, cellSize*2); //предметы инвентаря
@@ -591,8 +604,8 @@ function draw () {
 				drawMessageBox();
 			break;
 
-		case 2:
-			ctx.drawImage(finalBg, 0, 0, 1000, 1100); // фон
+		case 2: // финальная сцена
+			ctx.drawImage(finalBg, 0, 0, cvs.width, cvs.height); // фон
 			break;
 	}
 

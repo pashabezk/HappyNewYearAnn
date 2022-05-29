@@ -273,9 +273,10 @@ function setGrid(newGrid) {
 }
 
 // stage - сцена
+// 0 - зугрузка
 // 1 - игра
 // 2 - финал
-var stage = 1;
+var stage = 0;
 
 var cellSize = 50; //размер клетки
 var cellsAmountX = 19; //количество клеток минус одна (т.к. считаем с нуля)
@@ -319,7 +320,11 @@ var activePortal = new Image();
 var magicWand = new Image();
 var finalBg = new Image();
 
-hero.src = "img/heroDown.png";
+
+hero.src = "img/heroUp.png";
+hero.src = "img/heroLeft.png";
+hero.src = "img/heroRight.png";
+hero.src = "img/heroDown.png"; // изначальная позиция героя - вниз, но остальные картинки тоже надо загрузить заранее
 bg.src = "img/bg.jpg";
 foreground.src = "img/foreground.jpg";
 circle_mask.src = "img/circle_mask.png";
@@ -336,8 +341,15 @@ activePortal.src = "img/activePortal.png";
 magicWand.src = "img/MagicWand.png";
 finalBg.src = "img/Final bg.jpg";
 
-for (var i=0; i<gifts.length; i++)
+var allImgs = [hero, bg, foreground, circle_mask, tree, tree2, tree3, finish, key, chest, bear, honey, portal, activePortal, magicWand, finalBg]; // список всех картинок (нужен, чтобы реализовать загрузку)
+
+for (var i=0; i<gifts.length; i++) {
 	gifts[i].src = "img/gift"+i+".png";
+	allImgs.push(gifts[i]);
+}
+
+var loadedImgs = 0; // счётчик загруженных изображений (для реализации загрузки)
+var totalImgs = allImgs.length; // всего изображений
 
 // создание массива изображений. Массив совпадает с расшифровкой клеток (см. пояснение перед массивом grid)
 var cellType = ["", tree, tree2, tree3, gifts[0], gifts[1], gifts[2], gifts[3], gifts[4], finish, key, chest, bear, honey, portal, activePortal];
@@ -567,6 +579,19 @@ function drawMessageBox() {
 // функция отрисовки
 function draw () {
 	switch(stage) {
+		case 0: // загрузка
+			ctx.drawImage(bg, 0, 0, cvs.width, cvs.height); // фон
+			var text = "Загрузка изображений (" + loadedImgs + "/" + totalImgs + ")";
+			var textParams = ctx.measureText(text);
+			ctx.fillStyle = "black";
+			ctx.fillText(text, cvs.width/2 - textParams.width/2, cvs.height/2  - textHeight);
+			ctx.strokeStyle = "green";
+			var margin = cvs.width/10;
+			ctx.strokeRect(margin, cvs.height/2 + margin, cvs.width - margin*2, margin/2);
+			ctx.fillStyle = "green";
+			ctx.fillRect(margin, cvs.height/2 + margin, (cvs.width - margin*2)*(loadedImgs/totalImgs), margin/2);
+			break;
+
 		case 1: //игра
 			ctx.drawImage(bg, 0, 0, cvs.width, cvs.height); // фон
 
@@ -615,11 +640,20 @@ function draw () {
 function start (hero_x, hero_y) {
 	heroPosX = hero_x;
 	heroPosY = hero_y;
+	stage = 1; // переход к игре
 	draw();
+}
+
+// добавление счётчика на загрузку картинок (для реализации загрузки)
+for (var img of allImgs) {
+	img.onload = function() {
+		loadedImgs += 1;
+	}
 }
 
 // функция запуска запуска. Нужна, чтобы загрузились все картинки перед игрой
 finalBg.onload = function() {
-	onResize();
+	loadedImgs += 1;
 	start(9, 11);
 }
+onResize(); // запуск подбора размера canvas и элементов

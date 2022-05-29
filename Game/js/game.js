@@ -281,8 +281,8 @@ var stage = 0;
 var cellSize = 50; //размер клетки
 var cellsAmountX = 19; //количество клеток минус одна (т.к. считаем с нуля)
 var cellsAmountY = 19;
-var heroPosX = 0; //позиция героя
-var heroPosY = 0;
+var heroPosX = 9; //позиция героя
+var heroPosY = 11;
 
 var isMapInvisible = true; //является ли карта невидимой (если true, то видно только небольшой радиус вокруг персонажа)
 
@@ -319,12 +319,9 @@ var portal = new Image();
 var activePortal = new Image();
 var magicWand = new Image();
 var finalBg = new Image();
+var tempImg = [new Image(), new Image(), new Image()];
 
-
-hero.src = "img/heroUp.png";
-hero.src = "img/heroLeft.png";
-hero.src = "img/heroRight.png";
-hero.src = "img/heroDown.png"; // изначальная позиция героя - вниз, но остальные картинки тоже надо загрузить заранее
+hero.src = "img/heroDown.png";
 bg.src = "img/bg.jpg";
 foreground.src = "img/foreground.jpg";
 circle_mask.src = "img/circle_mask.png";
@@ -340,8 +337,11 @@ portal.src = "img/portal.png";
 activePortal.src = "img/activePortal.png";
 magicWand.src = "img/MagicWand.png";
 finalBg.src = "img/Final bg.jpg";
+tempImg[0].src = "img/heroUp.png";
+tempImg[1].src = "img/heroRight.png";
+tempImg[2].src = "img/heroLeft.png";
 
-var allImgs = [hero, bg, foreground, circle_mask, tree, tree2, tree3, finish, key, chest, bear, honey, portal, activePortal, magicWand, finalBg]; // список всех картинок (нужен, чтобы реализовать загрузку)
+var allImgs = [hero, tempImg[0], tempImg[1], tempImg[2], bg, foreground, circle_mask, tree, tree2, tree3, finish, key, chest, bear, honey, portal, activePortal, magicWand, finalBg]; // список всех картинок (нужен, чтобы реализовать загрузку)
 
 for (var i=0; i<gifts.length; i++) {
 	gifts[i].src = "img/gift"+i+".png";
@@ -636,24 +636,14 @@ function draw () {
 	requestAnimationFrame(draw); //зацикливание отрисовки
 }
 
-// функция запуска. Задаёт параметры начального расположения героя на сетке
-function start (hero_x, hero_y) {
-	heroPosX = hero_x;
-	heroPosY = hero_y;
-	stage = 1; // переход к игре
-}
-
 // добавление счётчика на загрузку картинок (для реализации загрузки)
+// после загрузки последней картинки запускается игра
 for (var img of allImgs) {
 	img.onload = function() {
 		loadedImgs += 1;
+		if (loadedImgs == totalImgs)
+			stage = 1; // переход к игре
 	}
-}
-
-// функция запуска запуска. Нужна, чтобы загрузились все картинки перед игрой
-finalBg.onload = function() {
-	loadedImgs += 1;
-	start(9, 11);
 }
 onResize(); // запуск подбора размера canvas и элементов
 draw(); // запуск отрисовки

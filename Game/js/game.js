@@ -273,7 +273,7 @@ function setGrid(newGrid) {
 }
 
 // stage - сцена
-// 0 - зугрузка
+// 0 - загрузка
 // 1 - игра
 // 2 - финал
 var stage = 0;
@@ -641,7 +641,6 @@ function start (hero_x, hero_y) {
 	heroPosX = hero_x;
 	heroPosY = hero_y;
 	stage = 1; // переход к игре
-	draw();
 }
 
 // добавление счётчика на загрузку картинок (для реализации загрузки)
@@ -657,3 +656,4 @@ finalBg.onload = function() {
 	start(9, 11);
 }
 onResize(); // запуск подбора размера canvas и элементов
+draw(); // запуск отрисовки

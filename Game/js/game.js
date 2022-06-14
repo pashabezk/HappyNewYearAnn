@@ -537,27 +537,58 @@ function heroRight() {
 	}
 }
 
-swipe(cvs, { maxTime: 1000, minTime: 100, maxDist: 150,  minDist: 60 }); // вызов функции swipe с предварительными настройками
+// координаты нажатия для отслеживания свайпов
+var touchPositionStartX;
+var touchPositionStartY;
+var touchPositionEndX;
+var touchPositionEndY;
 
-// обработка свайпов
-cvs.addEventListener("swipe", function(e) {
-	if (messageBoxList.length == 0) { // если нет messageBox'ов
-		switch(e.detail.dir) {
-			case 'up': //вверх
-				heroUp();
-				break;
-			case 'down': //вниз
-				heroDown();
-				break;
-			case 'left': //влево
-				heroLeft();
-				break;
-			case 'right': //вправо
-				heroRight();
-				break;
+// запоминаем координаты начала нажатия
+document.addEventListener('touchstart', function(event) {
+	touchPositionStartX = event.touches[0].pageX;
+	touchPositionStartY = event.touches[0].pageY;
+});
+
+// во время перемещения пальца по экрану - запоминаем последнюю координату, где был палец
+document.addEventListener('touchmove', function(event) {
+	touchPositionEndX = event.touches[0].pageX;
+	touchPositionEndY = event.touches[0].pageY;
+});
+
+// отслеживание конца нажатия
+document.addEventListener('touchend', function(event) {
+	var dir; // направление ("up", "down", "left", "right")
+	distX = touchPositionEndX - touchPositionStartX;
+	distY = touchPositionEndY - touchPositionStartY;
+	if ( touchPositionEndX!=0 && touchPositionEndY!=0 && // если было перемещение, то эти переменные не будут равны нулю 
+	  (Math.abs(distX)>10 || Math.abs(distY)>10)) { // и если перемещение было больше, чем на 10 px
+		if (Math.abs(distX) > Math.abs(distY))
+			dir = (distX < 0) ? "left" : "right";
+		else dir = (distY < 0) ? "up" : "down";
+
+		if (messageBoxList.length == 0) { // если нет messageBox'ов
+			switch(dir) {
+				case 'up': //вверх
+					heroUp();
+					break;
+				case 'down': //вниз
+					heroDown();
+					break;
+				case 'left': //влево
+					heroLeft();
+					break;
+				case 'right': //вправо
+					heroRight();
+					break;
+			}
 		}
 	}
+
+	// очистка данных о нажатиях
+	touchPositionEndX = 0;
+	touchPositionEndY = 0;
 });
+
 
 // отслеживание нажатий
 document.addEventListener('keydown', function(event) {checkKey(event);});
@@ -574,8 +605,8 @@ function checkKey(e) {
 			else {
 				if (e.code == 'ArrowUp') heroUp(); //вверх
 				if (e.code == 'ArrowDown') heroDown(); //вниз
-				if(e.code == 'ArrowLeft') heroLeft(); //влево
-				if(e.code == 'ArrowRight') heroRight(); //вправо
+				if (e.code == 'ArrowLeft') heroLeft(); //влево
+				if (e.code == 'ArrowRight') heroRight(); //вправо
 			}
 			break;
 

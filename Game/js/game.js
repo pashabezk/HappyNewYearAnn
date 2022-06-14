@@ -509,7 +509,57 @@ function checkCell (x, y) {
 	return canIGo;
 }
 
-//отслеживание нажатий
+function heroUp() {
+	hero.src = "img/heroUp.png";
+	if(checkCell(heroPosX, heroPosY-1)) {
+		heroPosY -= 1;
+	}
+}
+
+function heroDown() {
+	hero.src = "img/heroDown.png";
+	if(checkCell(heroPosX, heroPosY+1)) {
+		heroPosY += 1;
+	}
+}
+
+function heroLeft() {
+	hero.src = "img/heroLeft.png";
+	if(checkCell(heroPosX-1, heroPosY)) {
+		heroPosX-=1;
+	}
+}
+
+function heroRight() {
+	hero.src = "img/heroRight.png";
+	if(checkCell(heroPosX+1, heroPosY)) {
+		heroPosX+=1;
+	}
+}
+
+swipe(cvs, { maxTime: 1000, minTime: 100, maxDist: 150,  minDist: 60 }); // вызов функции swipe с предварительными настройками
+
+// обработка свайпов
+cvs.addEventListener("swipe", function(e) {
+	if (messageBoxList.length == 0) { // если нет messageBox'ов
+		switch(e.detail.dir) {
+			case 'up': //вверх
+				heroUp();
+				break;
+			case 'down': //вниз
+				heroDown();
+				break;
+			case 'left': //влево
+				heroLeft();
+				break;
+			case 'right': //вправо
+				heroRight();
+				break;
+		}
+	}
+});
+
+// отслеживание нажатий
 document.addEventListener('keydown', function(event) {checkKey(event);});
 function checkKey(e) {
 	switch(stage) {
@@ -522,33 +572,10 @@ function checkKey(e) {
 					}
 			}
 			else {
-				if (e.code == 'ArrowUp') { //вверх
-					hero.src = "img/heroUp.png";
-					if(checkCell(heroPosX, heroPosY-1)) {
-						heroPosY -= 1;
-					}
-				}
-
-				if (e.code == 'ArrowDown') { //вниз
-					hero.src = "img/heroDown.png";
-					if(checkCell(heroPosX, heroPosY+1)) {
-						heroPosY += 1;
-					}
-				}
-
-				if(e.code == 'ArrowLeft') { //влево
-					hero.src = "img/heroLeft.png";
-					if(checkCell(heroPosX-1, heroPosY)) {
-						heroPosX-=1;
-					}
-				}
-
-				if(e.code == 'ArrowRight') { //вправо
-					hero.src = "img/heroRight.png";
-					if(checkCell(heroPosX+1, heroPosY)) {
-						heroPosX+=1;
-					}
-				}
+				if (e.code == 'ArrowUp') heroUp(); //вверх
+				if (e.code == 'ArrowDown') heroDown(); //вниз
+				if(e.code == 'ArrowLeft') heroLeft(); //влево
+				if(e.code == 'ArrowRight') heroRight(); //вправо
 			}
 			break;
 
@@ -558,6 +585,14 @@ function checkKey(e) {
 			break;
 	}		
 }
+
+// обработка нажатий
+cvs.onclick = function() {
+	if (messageBoxList.length != 0) { // если есть messageBox, то закрыть его
+		messageBoxList[messageBoxList.length-1].doOnClose();
+		messageBoxList.pop();
+	}
+};
 
 // эмуляция рисунка MessageBox
 function drawMessageBox() {

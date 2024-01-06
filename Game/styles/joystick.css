@@ -1,0 +1,69 @@
+:root {
+	--background-color: white;
+	--border-color: #00008B;
+	--header-text-color: white;
+
+	--close-icon-color: #cf1322;
+	--close-icon-hover-color: #ff4d4f;
+	--close-icon-active-color: #a8071a;
+}
+
+.joystick-wrapper {
+	position: absolute;
+	top: 97%;
+	left: 97%;
+
+	background-color: var(--background-color);
+	border: solid var(--border-color) 2px;
+	border-radius: 2px;
+
+	user-select: none;
+}
+
+.joystick-wrapper.hidden {
+	display: none;
+}
+
+.joystick-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 2px 2px 3px;
+	background-color: var(--border-color);
+	cursor: move;
+}
+
+.joystick-header-text {
+	color: var(--header-text-color);
+}
+
+.joystick-header-close {
+	padding: 1px 4px;
+	margin: 1px 0 2px 1px;
+	color: var(--header-text-color);
+	background-color: var(--close-icon-color);
+	border: none;
+	border-radius: 2px;
+	cursor: pointer;
+}
+
+.joystick-header-close:hover {
+	background-color: var(--close-icon-hover-color);
+}
+
+.joystick-header-close:active {
+	background-color: var(--close-icon-active-color);
+}
+
+.joystick-buttons {
+	display: grid;
+	grid-template-columns: repeat(3, 30px);
+	grid-template-rows: repeat(3, 30px);
+
+	padding: 1px;
+}
+
+.joystick-button {
+	margin: 1px;
+	cursor: pointer;
+}

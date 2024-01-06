@@ -1,0 +1,129 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background-image: url(../img/bg.jpg);
+	font-size: 16px;
+
+	max-height: 100vh;
+	max-width: 100vw;
+}
+
+button {
+	cursor: pointer;
+}
+
+.brown-button {
+	background: #d0451b linear-gradient(to bottom, #cf866c 5%, #bc3315 100%);
+	border: 1px solid #942911;
+	border-radius: 6px;
+	box-shadow: inset 0 1px 0 0 #cf866c;
+
+	font-weight: bold;
+	color: white;
+	text-shadow: 0 1px 0 #854629;
+}
+
+.brown-button:hover {
+	background: #bc3315 linear-gradient(to bottom, #bc3315 5%, #cf866c 100%);
+}
+
+.brown-button:focus {
+	outline: 2px solid brown;
+}
+
+.one-row {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+}
+
+.canvas-wrapper {
+	height: 100dvh;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 15px;
+
+	box-sizing: border-box;
+}
+
+.canvas {
+	box-sizing: border-box;
+	border: 2px solid brown;
+}
+
+.messageBox {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+
+	max-width: 500px;
+	box-sizing: border-box;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 20px;
+
+	padding: 20px 30px 15px;
+	border-radius: 15px;
+	border: 2px solid brown;
+
+	background-color: white;
+}
+
+.messageBox.hidden {
+	display: none;
+}
+
+.mbText.center-text {
+	text-align: center;
+}
+
+.mbSubText {
+	text-align: center;
+	color: #b13df5;
+	font-size: smaller;
+}
+
+.mbButton {
+	padding: 6px 24px;
+}
+
+.mbButton:active {
+	position: relative;
+	top: 1px;
+}
+
+.mbImage {
+	height: 40px;
+	width: auto;
+}
+
+.mbImage.hidden {
+	display: none;
+}
+
+.show-hide-joystick-btn {
+	position: fixed;
+	bottom: 15px;
+	right: 15px;
+
+	padding: 7px;
+	border-radius: 40%;
+}
+
+.show-hide-joystick-btn:active {
+	bottom: 13px;
+}
+
+.show-hide-joystick-btn img {
+	width: 40px;
+	height: auto;
+}

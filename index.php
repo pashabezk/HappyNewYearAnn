@@ -1,1 +1,0 @@
-<?php header ('Location: /Game/index.html'); ?>

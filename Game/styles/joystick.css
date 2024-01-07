@@ -57,8 +57,8 @@
 
 .joystick-buttons {
 	display: grid;
-	grid-template-columns: repeat(3, 30px);
-	grid-template-rows: repeat(3, 30px);
+	grid-template-columns: repeat(3, 40px);
+	grid-template-rows: repeat(3, 40px);
 
 	padding: 1px;
 }

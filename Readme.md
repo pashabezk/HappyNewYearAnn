@@ -18,6 +18,12 @@
 
 <img src="Screenshots/Game.png" width="450" alt="Скриншот игры">
 
+
+
+https://github.com/pashabezk/HappyNewYearAnn/assets/60093073/0f26e619-a7e3-41b0-a012-ca4d4e32a45b
+
+
+
 В игре также реализовано небольшое текстовое описание, которое более подробно введёт в курс дела, а также поможет взаимодействовать с некоторыми внутриигровыми объектами.
 
 <img src="Screenshots/MessageBox.png" width="450" alt="Текстовое сообщение">
